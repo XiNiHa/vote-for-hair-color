@@ -1,0 +1,28 @@
+{
+  "name": "vote-for-hair-color",
+  "reason": {
+    "react-jsx": 3
+  },
+  "refmt": 3,
+  "suffix": ".bs.js",
+  "sources": [
+    {
+      "dir": "src",
+      "subdirs": true
+    }
+  ],
+  "bsc-flags": [
+    "-bs-super-errors",
+    "-bs-no-version-header"
+  ],
+  "package-specs": [
+    {
+      "module": "es6",
+      "in-source": true
+    }
+  ],
+  "bs-dependencies": [
+    "@rescript/react"
+  ],
+  "bs-dev-dependencies": []
+}
