@@ -1,5 +1,79 @@
+open Bindings
+open Types
+
+type state = {
+  voteResult: option<voteResult>,
+  choices: choices,
+  currColor: Color.t,
+  candColor: Color.t,
+  indecColors: indecColors,
+}
+
 @react.component
 let make = () => {
+  let db = React.useContext(FirebaseContext.context)
+  let (state, setState) = React.useState(() => {
+    voteResult: None,
+    choices: {
+      red: None,
+      green: None,
+      blue: None,
+    },
+    currColor: Color.rgb(127, 127, 127),
+    candColor: Color.rgb(127, 127, 127),
+    indecColors: {
+      red: {
+        onIncrease: Color.rgb(127, 127, 127),
+        onDecrease: Color.rgb(127, 127, 127),
+      },
+      green: {
+        onIncrease: Color.rgb(127, 127, 127),
+        onDecrease: Color.rgb(127, 127, 127),
+      },
+      blue: {
+        onIncrease: Color.rgb(127, 127, 127),
+        onDecrease: Color.rgb(127, 127, 127),
+      },
+    },
+  })
+
+  React.useEffect1(() => {
+    let unsub = Firestore.onSnapshot(Firestore.doc(db, "main", "voteResult"), (
+      doc: Firestore.documentSnapshot<voteResult>,
+    ) => {
+      setState(prev => {...prev, voteResult: Firestore.data(doc)})
+    })
+
+    Some(() => unsub())
+  }, [db])
+
+  React.useEffect2(() => {
+    Belt.Option.forEach(state.voteResult, voteResult => {
+      let currColor = Calc.currColor(voteResult)
+      let candColor = Calc.getCandidateColor(voteResult, state.choices)
+      let indecColors = Calc.getIndecColors(candColor, voteResult)
+
+      setState(old => {
+        ...old,
+        currColor: currColor,
+        candColor: candColor,
+        indecColors: indecColors,
+      })
+    })
+
+    None
+  }, (state.voteResult, state.choices))
+
+  let getRedUpdater = React.useCallback1(incOrDec => {
+    _ => setState(old => {...old, choices: {...old.choices, red: Some(incOrDec)}})
+  }, [setState])
+  let getGreenUpdater = React.useCallback1(incOrDec => {
+    _ => setState(old => {...old, choices: {...old.choices, green: Some(incOrDec)}})
+  }, [setState])
+  let getBlueUpdater = React.useCallback1(incOrDec => {
+    _ => setState(old => {...old, choices: {...old.choices, blue: Some(incOrDec)}})
+  }, [setState])
+
   <main className="mx-auto px-2 py-32 max-w-xl text-center font-sans keep-words">
     <SuggestionBoxIcon width="100" />
     <hgroup className="my-3">
@@ -17,23 +91,32 @@ let make = () => {
     <Separator />
     <VoteItem
       title={`R (빨강)`}
-      decColor={Color.rgb(0, 0, 0)}
-      incColor={Color.rgb(255, 0, 0)}
-      currColor={Color.rgb(127, 0, 0)}
+      decColor={state.indecColors.red.onDecrease}
+      incColor={state.indecColors.red.onIncrease}
+      candColor={state.candColor}
+      choice={state.choices.red}
+      onIncrease={getRedUpdater(Increase)}
+      onDecrease={getRedUpdater(Decrease)}
     />
     <VoteItem
       title={`G (초록)`}
-      decColor={Color.rgb(0, 0, 0)}
-      incColor={Color.rgb(0, 255, 0)}
-      currColor={Color.rgb(0, 127, 0)}
+      decColor={state.indecColors.green.onDecrease}
+      incColor={state.indecColors.green.onIncrease}
+      candColor={state.candColor}
+      choice={state.choices.green}
+      onIncrease={getGreenUpdater(Increase)}
+      onDecrease={getGreenUpdater(Decrease)}
     />
     <VoteItem
       title={`B (파랑)`}
-      decColor={Color.rgb(0, 0, 0)}
-      incColor={Color.rgb(0, 0, 255)}
-      currColor={Color.rgb(0, 0, 127)}
+      decColor={state.indecColors.blue.onDecrease}
+      incColor={state.indecColors.blue.onIncrease}
+      candColor={state.candColor}
+      choice={state.choices.blue}
+      onIncrease={getBlueUpdater(Increase)}
+      onDecrease={getBlueUpdater(Decrease)}
     />
     <Separator />
-    <Preview candidateColor={Color.rgb(127, 127, 127)} />
+    <Preview currentColor={state.currColor} candidateColor={state.candColor} />
   </main>
 }

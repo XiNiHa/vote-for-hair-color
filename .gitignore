@@ -7,7 +7,7 @@ dist-ssr
 !.yarn/releases
 !.yarn/plugins
 .pnp.*
-/lib
+lib
 .merlin
 *.lock
 !yarn.lock
