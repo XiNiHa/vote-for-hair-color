@@ -82,7 +82,7 @@ let make = (
 
   <div className="my-4 py-10">
     <div
-      className="relative overflow-visible flex items-center h-7 mx-4 rounded-full transition-all duration-500"
+      className="relative overflow-visible flex items-center h-7 mx-8 rounded-full transition-all duration-500"
       style={gradientStyle.curr}>
       {<div
         className="absolute inset-0 rounded-full transition-opacity duration-500"
@@ -90,7 +90,7 @@ let make = (
       />}
       <div className="z-10 transition-all duration-500" style={circleContainerStyle}>
         <div
-          className="w-20 h-20 -ml-[50%] rounded-full transition-colors duration-500"
+          className="w-16 h-16 sm:(w-20 h-20) -ml-[50%] rounded-full transition-colors duration-500"
           style={circleStyle}
         />
       </div>
