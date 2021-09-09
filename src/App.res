@@ -11,9 +11,13 @@ type state = {
   indecColors: indecColors,
 }
 
+exception FetchFailed(int, string)
+
 @react.component
 let make = () => {
   let db = React.useContext(FirebaseContext.context)
+  let {setModal} = React.useContext(ModalContext.context)
+
   let (state, setState) = React.useState(() => {
     voteResult: None,
     choices: {
@@ -77,7 +81,8 @@ let make = () => {
       })
   }, [setState])
   let getGreenUpdater = React.useCallback1(incOrDec => {
-    _ => setState(old => {
+    _ =>
+      setState(old => {
         if old.choices.green === Some(incOrDec) {
           {...old, choices: {...old.choices, green: None}}
         } else {
@@ -86,7 +91,8 @@ let make = () => {
       })
   }, [setState])
   let getBlueUpdater = React.useCallback1(incOrDec => {
-    _ => setState(old => {
+    _ =>
+      setState(old => {
         if old.choices.blue === Some(incOrDec) {
           {...old, choices: {...old.choices, blue: None}}
         } else {
@@ -95,10 +101,10 @@ let make = () => {
       })
   }, [setState])
 
-  let choiceToBool = choice =>
-    Belt.Option.map(choice, choice => choice == Types.Increase)
+  let choiceToBool = choice => Belt.Option.map(choice, choice => choice == Types.Increase)
 
-  let onSubmit = React.useCallback1(_ => {
+  let onSubmit = React.useCallback2(_ => {
+    setModal(_ => Some(<Spinner />))
     Fetch.fetchWithInit(
       functionURL,
       Fetch.RequestInit.make(
@@ -115,8 +121,14 @@ let make = () => {
         (),
       ),
     )
-    ->Promise.then(Fetch.Response.json)
-    ->Promise.then(response =>
+    ->Promise.then(res => {
+      if Fetch.Response.ok(res) {
+        Fetch.Response.json(res)
+      } else {
+        Promise.reject(FetchFailed(Fetch.Response.status(res), Fetch.Response.statusText(res)))
+      }
+    })
+    ->Promise.thenResolve(response =>
       response
       ->Js.Json.decodeObject
       ->Belt.Option.getUnsafe
@@ -124,17 +136,25 @@ let make = () => {
       ->(
         success => {
           if Js.Json.decodeBoolean(success)->Belt.Option.getWithDefault(false) {
-            Webapi.Dom.Window.alert(`투표가 완료되었습니다.`, Webapi.Dom.window)
-            Promise.resolve(true)
-          } else {
-            Promise.resolve(false)
+            setModal(_ => Some(<p className="text-center text-lg"> {React.string(`투표가 완료되었습니다.`)} </p>))
           }
+          ()
         }
+      )
+    )
+    ->Promise.catch(_ =>
+      Promise.resolve(
+        setModal(_ => Some(
+          <p className="text-center text-lg">
+            {React.string(`투표 완료 중 에러가 발생하였습니다.`)}<br />
+            {React.string(`다시 시도해 주세요.`)}
+          </p>,
+        )),
       )
     )
     ->ignore
     ()
-  }, [state])
+  }, (state, setModal))
 
   <main className="mx-auto px-2 py-32 max-w-xl text-center font-sans keep-words">
     <SuggestionBoxIcon width="100" />
