@@ -2,7 +2,7 @@ open Bindings
 open Types
 
 @react.component
-let make = (~currentColor, ~candidateColor) => {
+let make = (~currentColor, ~candidateColor, ~onSubmit) => {
   let candidateStyle = ReactDOM.Style.make(~background=Color.toString(candidateColor), ())
 
   let statistics = Calc.getStatistics(currentColor, candidateColor)
@@ -31,7 +31,8 @@ let make = (~currentColor, ~candidateColor) => {
     {buildDesc(`채도가`, statistics.saturation)}
     {buildDesc(`명도가`, statistics.lightness)}
     <button
-      className="rounded-lg bg-myBlue my-4 px-14 py-2 text-all-E text-lg shadow filter hover:brightness-110 focus:brightness-125 transition-all cursor-pointer">
+      className="rounded-lg bg-myBlue my-4 px-14 py-2 text-all-E text-lg shadow filter hover:brightness-110 focus:brightness-125 transition-all cursor-pointer"
+      onClick={onSubmit}>
       {React.string(`투표 완료하기`)}
     </button>
   </section>

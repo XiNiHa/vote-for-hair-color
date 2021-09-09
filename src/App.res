@@ -1,6 +1,8 @@
 open Bindings
 open Types
 
+@val @scope("import.meta.env") external functionURL: string = "VITE_FIREBASE_FUNCTION_URL"
+
 type state = {
   voteResult: option<voteResult>,
   choices: choices,
@@ -74,6 +76,47 @@ let make = () => {
     _ => setState(old => {...old, choices: {...old.choices, blue: Some(incOrDec)}})
   }, [setState])
 
+  let choiceToBool = choice =>
+    Belt.Option.mapWithDefault(choice, false, choice => choice == Types.Increase)
+
+  let onSubmit = React.useCallback1(_ => {
+    Fetch.fetchWithInit(
+      functionURL,
+      Fetch.RequestInit.make(
+        ~method_=Post,
+        ~body=Fetch.BodyInit.make(
+          {
+            "red": state.choices.red->choiceToBool,
+            "green": state.choices.green->choiceToBool,
+            "blue": state.choices.blue->choiceToBool,
+          }
+          ->Js.Json.stringifyAny
+          ->Belt.Option.getUnsafe,
+        ),
+        (),
+      ),
+    )
+    ->Promise.then(Fetch.Response.json)
+    ->Promise.then(response =>
+      response
+      ->Js.Json.decodeObject
+      ->Belt.Option.getUnsafe
+      ->Js.Dict.unsafeGet("success")
+      ->(
+        success => {
+          if Js.Json.decodeBoolean(success)->Belt.Option.getWithDefault(false) {
+            Webapi.Dom.Window.alert(`투표가 완료되었습니다.`, Webapi.Dom.window)
+            Promise.resolve(true)
+          } else {
+            Promise.resolve(false)
+          }
+        }
+      )
+    )
+    ->ignore
+    ()
+  }, [state])
+
   <main className="mx-auto px-2 py-32 max-w-xl text-center font-sans keep-words">
     <SuggestionBoxIcon width="100" />
     <hgroup className="my-3">
@@ -117,6 +160,6 @@ let make = () => {
       onDecrease={getBlueUpdater(Decrease)}
     />
     <Separator />
-    <Preview currentColor={state.currColor} candidateColor={state.candColor} />
+    <Preview currentColor={state.currColor} candidateColor={state.candColor} onSubmit={onSubmit} />
   </main>
 }

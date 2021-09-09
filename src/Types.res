@@ -2,16 +2,11 @@ open Bindings
 
 type incOrDec = Increase | Decrease
 
-type voteData = {
-  increase: int,
-  decrease: int,
-}
-
 type voteResult = {
   total: int,
-  red: voteData,
-  green: voteData,
-  blue: voteData,
+  red: int,
+  green: int,
+  blue: int,
 }
 
 type choices = {

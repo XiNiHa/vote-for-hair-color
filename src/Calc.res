@@ -7,28 +7,28 @@ let numsToValue = (total, inc) => {
 
 let currColor = result => {
   Color.rgb(
-    numsToValue(result.total, result.red.increase),
-    numsToValue(result.total, result.green.increase),
-    numsToValue(result.total, result.blue.increase),
+    numsToValue(result.total, result.red),
+    numsToValue(result.total, result.green),
+    numsToValue(result.total, result.blue),
   )
 }
 
 let getIndecColors = (candColor, result) => {
   {
     red: {
-      onDecrease: Color.setRed(candColor, numsToValue(result.total + 1, result.red.increase)),
-      onIncrease: Color.setRed(candColor, numsToValue(result.total + 1, result.red.increase + 1)),
+      onDecrease: Color.setRed(candColor, numsToValue(result.total + 1, result.red)),
+      onIncrease: Color.setRed(candColor, numsToValue(result.total + 1, result.red + 1)),
     },
     green: {
-      onDecrease: Color.setGreen(candColor, numsToValue(result.total + 1, result.green.increase)),
+      onDecrease: Color.setGreen(candColor, numsToValue(result.total + 1, result.green)),
       onIncrease: Color.setGreen(
         candColor,
-        numsToValue(result.total + 1, result.green.increase + 1),
+        numsToValue(result.total + 1, result.green + 1),
       ),
     },
     blue: {
-      onDecrease: Color.setBlue(candColor, numsToValue(result.total + 1, result.blue.increase)),
-      onIncrease: Color.setBlue(candColor, numsToValue(result.total + 1, result.blue.increase + 1)),
+      onDecrease: Color.setBlue(candColor, numsToValue(result.total + 1, result.blue)),
+      onIncrease: Color.setBlue(candColor, numsToValue(result.total + 1, result.blue + 1)),
     },
   }
 }
@@ -36,9 +36,9 @@ let getIndecColors = (candColor, result) => {
 let getCandidateColor = (result, choices: choices) => {
   let getValue = (choice, voteData) => {
     switch choice {
-    | Some(Increase) => numsToValue(result.total + 1, voteData.increase + 1)
-    | Some(Decrease) => numsToValue(result.total + 1, voteData.increase)
-    | None => numsToValue(result.total, voteData.increase)
+    | Some(Increase) => numsToValue(result.total + 1, voteData + 1)
+    | Some(Decrease) => numsToValue(result.total + 1, voteData)
+    | None => numsToValue(result.total, voteData)
     }
   }
 
