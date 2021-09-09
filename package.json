@@ -9,7 +9,10 @@
     "dev": "concurrently \"yarn dev:rescript\" \"yarn dev:vite\"",
     "dev:rescript": "rescript build -w -with-deps",
     "dev:vite": "vite",
-    "build": "vite build",
+    "build": "yarn build:bindings && yarn build:rescript && yarn build:vite",
+    "build:bindings": "yarn workspace bindings build && yarn && yarn res link",
+    "build:rescript": "rescript build -with-deps",
+    "build:vite": "vite build",
     "serve": "vite preview"
   },
   "dependencies": {

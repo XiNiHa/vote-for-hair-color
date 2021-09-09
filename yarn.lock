@@ -1734,25 +1734,25 @@ __metadata:
 
 "bindings@file:../bindings::locator=functions%40workspace%3Afunctions":
   version: 0.0.0
-  resolution: "bindings@file:../bindings#../bindings::hash=c96011&locator=functions%40workspace%3Afunctions"
+  resolution: "bindings@file:../bindings#../bindings::hash=b81346&locator=functions%40workspace%3Afunctions"
   dependencies:
     "@ryyppy/rescript-promise": ^2.1.0
   peerDependencies:
     color: ^4.0.1
     firebase: ^9.0.1
-  checksum: fe7cd504c02b1a0e961d55288e6617f1003e7601d1b0ba690aa231b1e70a009bd438a3cb614e7cc4631864b7eb6768c4c96f55918110bbf76e8925f172625575
+  checksum: ccb2fcae9710c555e7ff4e5137c0ebbaec35fa4bcd5e74b8af04080178b59c25b52021748740c8905a7b966c9b98b343e13b0bcece3b091444a8255313abe579
   languageName: node
   linkType: hard
 
 "bindings@file:./bindings::locator=vote-for-hair-color%40workspace%3A.":
   version: 0.0.0
-  resolution: "bindings@file:./bindings#./bindings::hash=c96011&locator=vote-for-hair-color%40workspace%3A."
+  resolution: "bindings@file:./bindings#./bindings::hash=b81346&locator=vote-for-hair-color%40workspace%3A."
   dependencies:
     "@ryyppy/rescript-promise": ^2.1.0
   peerDependencies:
     color: ^4.0.1
     firebase: ^9.0.1
-  checksum: fe7cd504c02b1a0e961d55288e6617f1003e7601d1b0ba690aa231b1e70a009bd438a3cb614e7cc4631864b7eb6768c4c96f55918110bbf76e8925f172625575
+  checksum: ccb2fcae9710c555e7ff4e5137c0ebbaec35fa4bcd5e74b8af04080178b59c25b52021748740c8905a7b966c9b98b343e13b0bcece3b091444a8255313abe579
   languageName: node
   linkType: hard
 
