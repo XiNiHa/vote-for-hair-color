@@ -1,0 +1,29 @@
+{
+  "name": "functions",
+  "version": "0.0.0",
+  "main": "dist/bundle.js",
+  "scripts": {
+    "deploy": "yarn build && yarn deploy:gcp",
+    "deploy:gcp": "gcloud functions deploy vote --region asia-northeast3 --runtime nodejs16 --trigger-http --allow-unauthenticated",
+    "build": "rescript build -with-deps && webpack"
+  },
+  "private": true,
+  "engines": {
+    "node": "16"
+  },
+  "dependencies": {
+    "@google-cloud/firestore": "^4.15.1",
+    "@ryyppy/rescript-promise": "^2.1.0",
+    "bindings": "file:../bindings",
+    "rescript-express": "^0.4.1"
+  },
+  "devDependencies": {
+    "@rollup/plugin-commonjs": "^20.0.0",
+    "@rollup/plugin-json": "^4.1.0",
+    "@rollup/plugin-node-resolve": "^13.0.4",
+    "rescript": "^9.1.4",
+    "rollup": "^2.56.3",
+    "webpack": "^5.52.0",
+    "webpack-cli": "^4.8.0"
+  }
+}

@@ -1,8 +1,5 @@
 {
-  "name": "vote-for-hair-color",
-  "reason": {
-    "react-jsx": 3
-  },
+  "name": "functions",
   "refmt": 3,
   "suffix": ".bs.js",
   "sources": [
@@ -21,12 +18,10 @@
       "in-source": true
     }
   ],
+  "namespace": true,
   "bs-dependencies": [
-    "@rescript/react",
     "@ryyppy/rescript-promise",
     "bindings",
-    "bs-fetch",
-    "bs-webapi"
-  ],
-  "bs-dev-dependencies": []
+    "rescript-express"
+  ]
 }

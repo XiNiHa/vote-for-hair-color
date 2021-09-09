@@ -1,0 +1,43 @@
+open Bindings
+open Express
+
+let db = GCPFirestore.firestore({
+  projectId: "vote-for-hair-color",
+})
+
+let vote = (req, res) => {
+  let body: Js.Dict.t<Js.Json.t> = req->body->Js.Json.deserializeUnsafe
+
+  let cors = res => {
+    set(res, "Access-Control-Allow-Origin", "*")
+    set(res, "Access-Control-Allow-Methods", "POST")
+    set(res, "Access-Control-Allow-Headers", "*")
+    set(res, "Access-Control-Allow-Max-Age", "30000")
+    res
+  }
+
+  let increase = (obj, key) => {
+    switch Js.Dict.get(body, key)->Belt.Option.map(Js.Json.decodeBoolean) {
+    | Some(Some(true)) => {
+      Js.Dict.set(obj, key, GCPFirestore.FieldValue.increment(1))
+      obj
+    }
+    | _ => obj
+    }
+  }
+
+  let updateDict = Js.Dict.empty()
+
+  updateDict
+  ->increase("red")
+  ->increase("green")
+  ->increase("blue")
+  ->Js.Dict.set("total", GCPFirestore.FieldValue.increment(1))
+
+  db
+  ->GCPFirestore.collection("main")
+  ->GCPFirestore.doc("voteResult")
+  ->GCPFirestore.update(updateDict)
+  ->Promise.thenResolve(() => res->cors->status(200)->json({"success": true}))
+  ->Promise.catch(_ => res->cors->status(500)->json({"success": false})->Promise.resolve)
+}
