@@ -67,17 +67,36 @@ let make = () => {
   }, (state.voteResult, state.choices))
 
   let getRedUpdater = React.useCallback1(incOrDec => {
-    _ => setState(old => {...old, choices: {...old.choices, red: Some(incOrDec)}})
+    _ =>
+      setState(old => {
+        if old.choices.red === Some(incOrDec) {
+          {...old, choices: {...old.choices, red: None}}
+        } else {
+          {...old, choices: {...old.choices, red: Some(incOrDec)}}
+        }
+      })
   }, [setState])
   let getGreenUpdater = React.useCallback1(incOrDec => {
-    _ => setState(old => {...old, choices: {...old.choices, green: Some(incOrDec)}})
+    _ => setState(old => {
+        if old.choices.green === Some(incOrDec) {
+          {...old, choices: {...old.choices, green: None}}
+        } else {
+          {...old, choices: {...old.choices, green: Some(incOrDec)}}
+        }
+      })
   }, [setState])
   let getBlueUpdater = React.useCallback1(incOrDec => {
-    _ => setState(old => {...old, choices: {...old.choices, blue: Some(incOrDec)}})
+    _ => setState(old => {
+        if old.choices.blue === Some(incOrDec) {
+          {...old, choices: {...old.choices, blue: None}}
+        } else {
+          {...old, choices: {...old.choices, blue: Some(incOrDec)}}
+        }
+      })
   }, [setState])
 
   let choiceToBool = choice =>
-    Belt.Option.mapWithDefault(choice, false, choice => choice == Types.Increase)
+    Belt.Option.map(choice, choice => choice == Types.Increase)
 
   let onSubmit = React.useCallback1(_ => {
     Fetch.fetchWithInit(

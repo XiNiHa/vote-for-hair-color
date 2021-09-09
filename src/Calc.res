@@ -7,45 +7,45 @@ let numsToValue = (total, inc) => {
 
 let currColor = result => {
   Color.rgb(
-    numsToValue(result.total, result.red),
-    numsToValue(result.total, result.green),
-    numsToValue(result.total, result.blue),
+    numsToValue(result.redVotes, result.redInc),
+    numsToValue(result.greenVotes, result.greenInc),
+    numsToValue(result.blueVotes, result.blueInc),
   )
 }
 
 let getIndecColors = (candColor, result) => {
   {
     red: {
-      onDecrease: Color.setRed(candColor, numsToValue(result.total + 1, result.red)),
-      onIncrease: Color.setRed(candColor, numsToValue(result.total + 1, result.red + 1)),
+      onDecrease: Color.setRed(candColor, numsToValue(result.redVotes + 1, result.redInc)),
+      onIncrease: Color.setRed(candColor, numsToValue(result.redVotes + 1, result.redInc + 1)),
     },
     green: {
-      onDecrease: Color.setGreen(candColor, numsToValue(result.total + 1, result.green)),
+      onDecrease: Color.setGreen(candColor, numsToValue(result.greenVotes + 1, result.greenInc)),
       onIncrease: Color.setGreen(
         candColor,
-        numsToValue(result.total + 1, result.green + 1),
+        numsToValue(result.greenVotes + 1, result.greenInc + 1),
       ),
     },
     blue: {
-      onDecrease: Color.setBlue(candColor, numsToValue(result.total + 1, result.blue)),
-      onIncrease: Color.setBlue(candColor, numsToValue(result.total + 1, result.blue + 1)),
+      onDecrease: Color.setBlue(candColor, numsToValue(result.blueVotes + 1, result.blueInc)),
+      onIncrease: Color.setBlue(candColor, numsToValue(result.blueVotes + 1, result.blueInc + 1)),
     },
   }
 }
 
 let getCandidateColor = (result, choices: choices) => {
-  let getValue = (choice, voteData) => {
+  let getValue = (choice, totalVotes, incVotes) => {
     switch choice {
-    | Some(Increase) => numsToValue(result.total + 1, voteData + 1)
-    | Some(Decrease) => numsToValue(result.total + 1, voteData)
-    | None => numsToValue(result.total, voteData)
+    | Some(Increase) => numsToValue(totalVotes + 1, incVotes + 1)
+    | Some(Decrease) => numsToValue(totalVotes + 1, incVotes)
+    | None => numsToValue(totalVotes, incVotes)
     }
   }
 
   Color.rgb(
-    getValue(choices.red, result.red),
-    getValue(choices.green, result.green),
-    getValue(choices.blue, result.blue),
+    getValue(choices.red, result.redVotes, result.redInc),
+    getValue(choices.green, result.greenVotes, result.greenInc),
+    getValue(choices.blue, result.blueVotes, result.blueInc),
   )
 }
 

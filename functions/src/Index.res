@@ -18,8 +18,11 @@ let vote = (req, res) => {
 
   let increase = (obj, key) => {
     switch Js.Dict.get(body, key)->Belt.Option.map(Js.Json.decodeBoolean) {
-    | Some(Some(true)) => {
-      Js.Dict.set(obj, key, GCPFirestore.FieldValue.increment(1))
+    | Some(Some(vote)) => {
+      Js.Dict.set(obj, key++"Votes", GCPFirestore.FieldValue.increment(1))
+      if vote {
+        Js.Dict.set(obj, key++"Inc", GCPFirestore.FieldValue.increment(1))
+      }
       obj
     }
     | _ => obj
@@ -32,7 +35,7 @@ let vote = (req, res) => {
   ->increase("red")
   ->increase("green")
   ->increase("blue")
-  ->Js.Dict.set("total", GCPFirestore.FieldValue.increment(1))
+  ->ignore
 
   db
   ->GCPFirestore.collection("main")
