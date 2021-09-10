@@ -2125,6 +2125,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"cookie@npm:^0.4.1":
+  version: 0.4.1
+  resolution: "cookie@npm:0.4.1"
+  checksum: bd7c47f5d94ab70ccdfe8210cde7d725880d2fcda06d8e375afbdd82de0c8d3b73541996e9ce57d35f67f672c4ee6d60208adec06b3c5fc94cebb85196084cf8
+  languageName: node
+  linkType: hard
+
 "core-js@npm:3.6.5":
   version: 3.6.5
   resolution: "core-js@npm:3.6.5"
@@ -4425,6 +4432,16 @@ fsevents@~2.3.2:
   languageName: node
   linkType: hard
 
+"rescript-cookie@npm:^1.0.1":
+  version: 1.0.1
+  resolution: "rescript-cookie@npm:1.0.1"
+  dependencies:
+    cookie: ^0.4.1
+    rescript: ^9.1.3
+  checksum: ff6ef7a240cdb3b7ec2b6985236c295a10afde8d74f169ced29ac47a7dcf15b2b755bbfbdd184ddc51d8fa4a9a01086d3e50fd0d7c9e8c390035b89880d80ad7
+  languageName: node
+  linkType: hard
+
 "rescript-express@npm:^0.4.1":
   version: 0.4.1
   resolution: "rescript-express@npm:0.4.1"
@@ -4434,7 +4451,7 @@ fsevents@~2.3.2:
   languageName: node
   linkType: hard
 
-"rescript@npm:^9.1.4":
+"rescript@npm:^9.1.3, rescript@npm:^9.1.4":
   version: 9.1.4
   resolution: "rescript@npm:9.1.4"
   bin:
@@ -5386,6 +5403,7 @@ fsevents@~2.3.2:
     react: ^17.0.2
     react-dom: ^17.0.2
     rescript: ^9.1.4
+    rescript-cookie: ^1.0.1
     vite: ^2.5.2
     vite-plugin-react-svg: ^0.2.0
     vite-plugin-windicss: ^1.4.2
@@ -5400,6 +5418,8 @@ fsevents@~2.3.2:
     bs-fetch@0.6.2:
       unplugged: true
     bs-webapi@0.19.1:
+      unplugged: true
+    rescript-cookie@1.0.1:
       unplugged: true
     rescript-express@0.4.1:
       unplugged: true

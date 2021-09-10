@@ -26,7 +26,8 @@
     "@ryyppy/rescript-promise",
     "bindings",
     "bs-fetch",
-    "bs-webapi"
+    "bs-webapi",
+    "rescript-cookie"
   ],
   "bs-dev-dependencies": []
 }

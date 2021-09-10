@@ -1,6 +1,7 @@
 type t
 
 @module("color") external rgb: (int, int, int) => t = "rgb"
+@module("color") external fromString: string => t = "default"
 
 @send external toString: t => string = "string"
 
