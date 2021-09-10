@@ -14,7 +14,7 @@
   "dependencies": {
     "@google-cloud/firestore": "^4.15.1",
     "@ryyppy/rescript-promise": "^2.1.0",
-    "bindings": "file:../bindings",
+    "bindings": "workspace:*",
     "rescript-express": "^0.4.1"
   },
   "devDependencies": {
