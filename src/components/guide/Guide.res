@@ -1,5 +1,5 @@
 @react.component
-let make = () => {
+let make = (~voteEndAt) => {
   <section>
     <h2 className="font-medium text-all-3">
       {React.string(`투표 진행 방식 및 유의사항`)}
@@ -23,7 +23,7 @@ let make = () => {
       </GuideItem>
       <GuideItem no={3}>
         {React.string(`
-투표는 9월 15일 0시에 종료되며, 
+투표는 ${voteEndAt->Js.Date.toLocaleString} 에 종료되며, 
 최종 결과를 메인 페이지에서 확인하실 수 있습니다. 
 또한, 각종 SNS를 통해서도 공지할 예정입니다.
         `)}

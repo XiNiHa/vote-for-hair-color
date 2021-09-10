@@ -1,6 +1,8 @@
 open Bindings
 open Express
 
+exception VoteEnded(float)
+
 let db = GCPFirestore.firestore({
   projectId: "vote-for-hair-color",
 })
@@ -12,6 +14,15 @@ let vote = (req, res) => {
     set(res, "Access-Control-Allow-Headers", "*")
     set(res, "Access-Control-Allow-Max-Age", "30000")
     res
+  }
+
+  let handleExn = e => {
+    Js.log(e)
+    switch e {
+    | VoteEnded(voteEndedAt) =>
+      res->cors->status(410)->json({"success": false, "voteEndedAt": voteEndedAt})
+    | _ => res->cors->status(500)->json({"success": false})
+    }
   }
 
   try {
@@ -33,19 +44,34 @@ let vote = (req, res) => {
     let updateDict = Js.Dict.empty()
     updateDict->increase("red")->increase("green")->increase("blue")->ignore
 
-    db
-    ->GCPFirestore.collection("main")
-    ->GCPFirestore.doc("voteResult")
-    ->GCPFirestore.update(updateDict)
-    ->Promise.thenResolve(() => res->cors->status(200)->json({"success": true}))
+    let docRef = db->GCPFirestore.collection("main")->GCPFirestore.doc("voteResult")
+
+    docRef
+    ->GCPFirestore.get
+    ->Promise.then(data => {
+      let voteEndAt =
+        data
+        ->GCPFirestore.data
+        ->Js.Dict.get("voteEndAt")
+        ->Belt.Option.map(timestamp => Js.Date.fromFloat(timestamp["seconds"] *. 1000.0))
+
+      let ended = switch voteEndAt {
+      | Some(voteEndAt) => Js.Date.now() >= Js.Date.getTime(voteEndAt)
+      | None => true
+      }
+
+      if ended {
+        Promise.reject(VoteEnded(voteEndAt->Belt.Option.getUnsafe->Js.Date.getTime))
+      } else {
+        docRef
+        ->GCPFirestore.update(updateDict)
+        ->Promise.thenResolve(() => res->cors->status(200)->json({"success": true}))
+      }
+    })
     ->Promise.catch(e => {
-      Js.log(e)
-      res->cors->status(500)->json({"success": false})->Promise.resolve
+      e->handleExn->Promise.resolve
     })
   } catch {
-  | e => {
-      Js.log(e)
-      res->cors->status(500)->json({"success": false})->Promise.resolve
-    }
+  | e => e->handleExn->Promise.resolve
   }
 }

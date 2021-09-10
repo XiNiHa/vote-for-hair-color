@@ -2,6 +2,11 @@ open Bindings
 
 type incOrDec = Increase | Decrease
 
+type timestamp = {
+  seconds: float,
+  nanoseconds: float
+}
+
 type voteResult = {
   redInc: int,
   redVotes: int,
@@ -9,6 +14,7 @@ type voteResult = {
   greenVotes: int,
   blueInc: int,
   blueVotes: int,
+  voteEndAt: timestamp,
 }
 
 type choices = {

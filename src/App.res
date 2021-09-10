@@ -5,6 +5,7 @@ open Types
 
 type state = {
   voteResult: option<voteResult>,
+  voteEndAt: Js.Date.t,
   choices: choices,
   currColor: Color.t,
   candColor: Color.t,
@@ -20,6 +21,7 @@ let make = () => {
 
   let (state, setState) = React.useState(() => {
     voteResult: None,
+    voteEndAt: Js.Date.fromFloat(1631718000000.0),
     choices: {
       red: None,
       green: None,
@@ -61,6 +63,7 @@ let make = () => {
 
       setState(old => {
         ...old,
+        voteEndAt: Js.Date.fromFloat(voteResult.voteEndAt.seconds *. 1000.0),
         currColor: currColor,
         candColor: candColor,
         indecColors: indecColors,
@@ -156,27 +159,43 @@ let make = () => {
         }
       )
     )
-    ->Promise.catch(_ =>
-      Promise.resolve(
-        setModal(_ => Some(
-          <p className="text-center text-lg">
-            {React.string(`투표 완료 중 에러가 발생하였습니다.`)}
-            <br />
-            {React.string(`다시 시도해 주세요.`)}
-          </p>,
-        )),
-      )
+    ->Promise.catch(e =>
+      switch e {
+      | FetchFailed(410, _) =>
+        Promise.resolve(
+          setModal(_ => Some(
+            <p className="text-center text-lg">
+              {React.string(`투표가 이미 종료되었습니다.`)}
+              <br />
+              {React.string(`새로고침하여 결과를 확인해 주세요.`)}
+            </p>,
+          )),
+        )
+      | _ =>
+        Promise.resolve(
+          setModal(_ => Some(
+            <p className="text-center text-lg">
+              {React.string(`투표 완료 중 에러가 발생하였습니다.`)}
+              <br />
+              {React.string(`다시 시도해 주세요.`)}
+            </p>,
+          )),
+        )
+      }
     )
     ->ignore
     ()
   }, (state, setModal))
 
   let cookieData = Cookie.parse(~str=DocumentCookie.d.cookie, ())->mapCookie
+  let voteEnded = state.voteEndAt->Js.Date.getTime <= Js.Date.now()
 
-  <main className="mx-auto px-2 py-32 max-w-xl text-center font-sans keep-words">
-    {switch cookieData {
-    | Some(cookieData) => <Status currentColor={state.currColor} cookieData={cookieData} />
-    | None => <>
+  <main className="mx-auto px-2 py-32 max-w-xl text-center font-sans keep-words w-screen overflow-x-hidden">
+    {switch (voteEnded, cookieData) {
+    | (true, _) => <Result finalColor={state.currColor} voteResult={state.voteResult} />
+    | (false, Some(cookieData)) =>
+      <Status currentColor={state.currColor} cookieData={cookieData} voteEndAt={state.voteEndAt} />
+    | (false, None) => <>
         <SuggestionBoxIcon width="100" />
         <hgroup className="my-3">
           <h1 className="m-0 text-2xl font-bold text-all-3"> {React.string(`선택 2021:`)} </h1>
@@ -189,7 +208,7 @@ let make = () => {
           {React.string(`마지막 탈색 이후 검은 머리가 너무 많이 자라서 염색을 하려고 하던 중이었는데, 색을 뭐로 하면 좋을지 모르겠어서 추천을 받아보려다 아예 투표를 하면 재밌겠다 싶어 진행하게 되었습니다.`)}
         </p>
         <Separator />
-        <Guide />
+        <Guide voteEndAt={state.voteEndAt} />
         <Separator />
         <VoteItem
           title={`R (빨강)`}
