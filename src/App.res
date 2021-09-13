@@ -190,13 +190,22 @@ let make = () => {
   let cookieData = Cookie.parse(~str=DocumentCookie.d.cookie, ())->mapCookie
   let voteEnded = state.voteEndAt->Js.Date.getTime <= Js.Date.now()
 
-  <main className="mx-auto px-2 py-32 max-w-xl text-center font-sans keep-words w-screen overflow-x-hidden">
+  <main
+    className="mx-auto px-2 py-32 max-w-xl text-center font-sans keep-words w-screen overflow-x-hidden">
     {switch (voteEnded, cookieData) {
     | (true, _) => <Result finalColor={state.currColor} voteResult={state.voteResult} />
     | (false, Some(cookieData)) =>
       <Status currentColor={state.currColor} cookieData={cookieData} voteEndAt={state.voteEndAt} />
     | (false, None) => <>
-        <SuggestionBoxIcon width="100" />
+        <picture>
+          <source srcSet="https://firebasestorage.googleapis.com/v0/b/vote-for-hair-color.appspot.com/o/KakaoTalk_Photo_2021-09-13-19-56-34.webp?alt=media&token=d04a02ae-ca6a-40b9-935f-4bb6aa82815f" type_="image/webp" />
+          <source srcSet="https://firebasestorage.googleapis.com/v0/b/vote-for-hair-color.appspot.com/o/KakaoTalk_Photo_2021-09-13-19-56-34.png?alt=media&token=ef47c35f-bf2d-4461-80b0-f8cea3f54ad9" type_="image/png" />
+          <img
+            src="https://firebasestorage.googleapis.com/v0/b/vote-for-hair-color.appspot.com/o/KakaoTalk_Photo_2021-09-13-19-56-34.png?alt=media&token=ef47c35f-bf2d-4461-80b0-f8cea3f54ad9"
+            width="2379"
+            height="1784"
+            className="w-full h-min object-contain" />
+        </picture>
         <hgroup className="my-3">
           <h1 className="m-0 text-2xl font-bold text-all-3"> {React.string(`선택 2021:`)} </h1>
           <h2 className="m-0 text-lg leading-loose font-normal text-all-5">

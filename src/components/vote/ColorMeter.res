@@ -80,9 +80,9 @@ let make = (
     Some(() => Js.Global.clearTimeout(timeout))
   }, (decColorStr, incColorStr))
 
-  <div className="my-4 py-10">
+  <div className="my-4 py-10 filter drop-shadow-lg">
     <div
-      className="relative overflow-visible flex items-center h-7 mx-8 rounded-full transition-all duration-500"
+      className="relative overflow-visible flex items-center h-5 mx-8 rounded-full transition-all duration-500"
       style={gradientStyle.curr}>
       {<div
         className="absolute inset-0 rounded-full transition-opacity duration-500"
